@@ -16,10 +16,11 @@ public class Cannon : MonoBehaviour
     [SerializeField] private float gravedad = 9.8f;
     [SerializeField] private int pasosTrayectoria = 60;
     [SerializeField] private Transform direccion;
-
+    private float bulletTime = 6f;
     [Header("Marcador de impacto")]
     [SerializeField] private float radioMarcador = 0.5f;
 
+    [SerializeField] private GameObject prefabBala;
     
     private GameObject trajectoriaGO;
     private LineRenderer lineRenderer;
@@ -35,9 +36,16 @@ public class Cannon : MonoBehaviour
         CrearMarcadorGO();
     }
 
-    public void Disparar()
+    public void OnShoot(InputAction.CallbackContext context)    
     {
-        
+        if (!context.performed) return;
+
+        Vector3 velocidadInicial = direccion.forward * velocidadBala;
+
+        GameObject bala = Instantiate(prefabBala, direccion.position, Quaternion.identity);
+        Shoot scriptBala = bala.GetComponent<Shoot>();
+        scriptBala.Inicializar(velocidadInicial, gravedad);
+        Destroy(bala,bulletTime);
     }
    
     void CrearTrayectoriaGO()

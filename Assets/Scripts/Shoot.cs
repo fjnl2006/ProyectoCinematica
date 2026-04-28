@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class Shoot : MonoBehaviour
@@ -7,10 +6,14 @@ public class Shoot : MonoBehaviour
     private float gravedad;
     private float tiempoVida;
     private Vector3 spawnPos;
-    
-    Vector3 exploxionPos;
-    public float radius;
-    
+
+    [Header("Explosión")]
+    public float radius = 3f;
+    public int dañoExplosion = 1;           // Daño que aplica la explosión a cada enemigo
+    public GameObject prefabExplosion;       // Partículas / VFX (opcional)
+
+    private bool haExplotado = false;
+
     public void Inicializar(Vector3 velocidad, float gravedad)
     {
         this.velocidadInicial = velocidad;
@@ -19,13 +22,12 @@ public class Shoot : MonoBehaviour
         this.spawnPos = transform.position;
     }
 
-    // Update is called once per frame
     void Update()
     {
         tiempoVida += Time.deltaTime;
         float t = tiempoVida;
 
-        // Cinemática clásica: pos = pos0 + v0*t + 0.5*a*t²
+        // Cinemática clásica: pos = pos0 + v0·t + 0.5·a·t²
         float x = velocidadInicial.x * t;
         float y = velocidadInicial.y * t - 0.5f * gravedad * t * t;
         float z = velocidadInicial.z * t;
@@ -35,15 +37,34 @@ public class Shoot : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        Collider[] colliders = Physics.OverlapSphere(exploxionPos, radius);
-        for (int i = 0; i < colliders.Length; i++)
+        if (haExplotado) return;
+        Explotar();
+    }
+
+    private void Explotar()
+    {
+        haExplotado = true;
+
+        // Partículas opcionales
+        if (prefabExplosion != null)
+            Instantiate(prefabExplosion, transform.position, Quaternion.identity);
+
+        // Daño en área a todos los enemigos en el radio
+        Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
+        foreach (Collider col in colliders)
         {
-            Destroy(colliders[i].gameObject);
+            Enemy enemy = col.GetComponent<Enemy>();
+            if (enemy != null)
+                enemy.RecibirDaño(dañoExplosion);
         }
-        
-        if (other.gameObject.tag == "Enemy")
-        {
-            
-        }
+
+        Destroy(gameObject);
+    }
+
+    // Dibuja el radio de explosión en el editor (solo para debug)
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = new Color(1f, 0.3f, 0f, 0.4f);
+        Gizmos.DrawWireSphere(transform.position, radius);
     }
 }

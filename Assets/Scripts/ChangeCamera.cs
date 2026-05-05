@@ -5,33 +5,26 @@ using UnityEngine.InputSystem;
 
 public class ChangeCamera : MonoBehaviour
 {
+    public Door Door;
     public List<Camera> cameras;
     public int index = 0;
     public Camera currentCamera;
 
-    PlayerInput input;
-    InputAction cameraAction;
-
-    void Start()
+    void Awake()
     {
-        input = GetComponent<PlayerInput>();
-
-
-        input.actions.Enable();
-
-        cameraAction = input.actions["Camera"];
-
         SetCamera(0);
     }
 
-
-    void Update()
+    // Este método será llamado por el sistema de eventos del PlayerInput
+    public void OnCameraAction(InputAction.CallbackContext context)
     {
-        if (cameraAction.WasPressedThisFrame())
+        if (context.performed)
         {
             NextCamera();
         }
     }
+
+
     void NextCamera()
     {
         index++;
@@ -43,12 +36,19 @@ public class ChangeCamera : MonoBehaviour
 
     void SetCamera(int i)
     {
-
         foreach (Camera cam in cameras)
             cam.gameObject.SetActive(false);
 
-
         currentCamera = cameras[i];
         currentCamera.gameObject.SetActive(true);
+        Debug.Log("Cámara cambiada a: " + currentCamera.name);
+    }
+    public void OnDoorAction(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            Debug.Log("OnDoorAction triggered");
+            StartCoroutine(Door.BajarYSubir());
+        }
     }
 }

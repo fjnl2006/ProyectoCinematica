@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class Door : MonoBehaviour
 {
+
+    
     [Header("Movimiento")]
     public float velocidad = 2f;
     public float distanciaBajada = 5f;
@@ -12,29 +14,17 @@ public class Door : MonoBehaviour
     private Vector3 posicionFinal;
     private bool enMovimiento = false;
 
-    [Header("Input")]
-    private PlayerInput input;
-    private InputAction doorAction;
-
     void Start()
     {
+        
         posicionInicial = transform.position;
         posicionFinal = posicionInicial - new Vector3(0, distanciaBajada, 0);
-
-        input = GetComponent<PlayerInput>();
-        doorAction = input.actions["Door"];
     }
 
-    void Update()
-    {
-        // Solo permite activar la puerta si NO está en movimiento
-        if (doorAction.WasPressedThisFrame() && !enMovimiento)
-        {
-            StartCoroutine(BajarYSubir());
-        }
-    }
+   
+    
 
-    private System.Collections.IEnumerator BajarYSubir()
+    public System.Collections.IEnumerator BajarYSubir()
     {
         enMovimiento = true;
 
@@ -59,7 +49,6 @@ public class Door : MonoBehaviour
 
         transform.position = posicionInicial;
 
-        // Ahora la puerta puede volver a activarse
         enMovimiento = false;
     }
 }

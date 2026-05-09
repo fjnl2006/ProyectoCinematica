@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
@@ -26,6 +27,9 @@ public class Cannon : MonoBehaviour
     private LineRenderer lineRenderer;
     private GameObject marcadorGO;
     private LineRenderer marcadorLR;
+    public GameObject canvas;
+
+    [SerializeField] private float shootTime;
 
     void Start()
     {
@@ -34,18 +38,50 @@ public class Cannon : MonoBehaviour
 
         CrearTrayectoriaGO();
         CrearMarcadorGO();
+        //canvas.SetActive(false);
+    }
+
+    
+    void FixedUpdate()
+    {
+        if (lookInput != Vector2.zero)
+        {
+            currentAngleY += lookInput.x * rotationSpeed;
+            currentAngleY  = Mathf.Clamp(currentAngleY, min, max);
+
+            currentAngleX -= lookInput.y * rotationSpeed;
+            currentAngleX  = Mathf.Clamp(currentAngleX, -50f, 70f);
+
+            transform.rotation = Quaternion.Euler(currentAngleX, currentAngleY, 0);
+        }
+
+        DibujarTrayectoria(direccion.position, direccion.forward, velocidadBala, gravedad);
+        shootTime += Time.deltaTime;
+        if (shootTime < 3)
+        {
+            canvas.SetActive(true);
+        }
+        else
+        {
+            canvas.SetActive(false);
+        }
     }
 
     public void OnShoot(InputAction.CallbackContext context)    
     {
         if (!context.performed) return;
+        if (shootTime > 3f)
+        {
+            Vector3 velocidadInicial = direccion.forward * velocidadBala;
 
-        Vector3 velocidadInicial = direccion.forward * velocidadBala;
-
-        GameObject bala = Instantiate(prefabBala, direccion.position, Quaternion.identity);
-        Shoot scriptBala = bala.GetComponent<Shoot>();
-        scriptBala.Inicializar(velocidadInicial, gravedad);
-        Destroy(bala,bulletTime);
+            GameObject bala = Instantiate(prefabBala, direccion.position, Quaternion.identity);
+            Shoot scriptBala = bala.GetComponent<Shoot>();
+            scriptBala.Inicializar(velocidadInicial, gravedad);
+            Destroy(bala,bulletTime);
+            shootTime = 0f;
+            //canvas.SetActive(false);
+        }
+       
     }
    
     void CrearTrayectoriaGO()
@@ -98,21 +134,7 @@ public class Cannon : MonoBehaviour
         marcadorGO.SetActive(false);
     }
 
-    void FixedUpdate()
-    {
-        if (lookInput != Vector2.zero)
-        {
-            currentAngleY += lookInput.x * rotationSpeed;
-            currentAngleY  = Mathf.Clamp(currentAngleY, min, max);
-
-            currentAngleX -= lookInput.y * rotationSpeed;
-            currentAngleX  = Mathf.Clamp(currentAngleX, -50f, 70f);
-
-            transform.rotation = Quaternion.Euler(currentAngleX, currentAngleY, 0);
-        }
-
-        DibujarTrayectoria(direccion.position, direccion.forward, velocidadBala, gravedad);
-    }
+    
 
     public void Look(InputAction.CallbackContext context)
     {

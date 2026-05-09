@@ -5,7 +5,7 @@ public class Settings : MonoBehaviour
 {
     
     [SerializeField] private GameObject menuPausa;
-    
+    [SerializeField] private GameObject menuTecladoYRaton;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -27,11 +27,24 @@ public class Settings : MonoBehaviour
         
     }
 
-    public void OnBack()
+    public void OnBackFirst()
     {
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         menuPausa.SetActive(false);
+    }
+
+    public void OnBackSecond()
+    {
+        menuTecladoYRaton.SetActive(false);
+        menuPausa.SetActive(true);
+    }
+
+    public void OnTecladoYRaton()
+    {
+        menuPausa.SetActive(false);
+        menuTecladoYRaton.SetActive(true);
+        
     }
 }

@@ -57,7 +57,7 @@ public class Cannon : MonoBehaviour
 
         DibujarTrayectoria(direccion.position, direccion.forward, velocidadBala, gravedad);
         shootTime += Time.deltaTime;
-        if (shootTime < 3)
+        if (shootTime < 2)
         {
             canvas.SetActive(true);
         }
@@ -70,12 +70,14 @@ public class Cannon : MonoBehaviour
     public void OnShoot(InputAction.CallbackContext context)    
     {
         if (!context.performed) return;
-        if (shootTime > 3f)
+        if (shootTime > 2f)
         {
             Vector3 velocidadInicial = direccion.forward * velocidadBala;
 
             GameObject bala = Instantiate(prefabBala, direccion.position, Quaternion.identity);
             Shoot scriptBala = bala.GetComponent<Shoot>();
+            scriptBala.dañoExplosion = WaveSpawner.instance.currentBulletDamage;
+            scriptBala.radius = WaveSpawner.instance.currentRadius;
             scriptBala.Inicializar(velocidadInicial, gravedad);
             Destroy(bala,bulletTime);
             shootTime = 0f;

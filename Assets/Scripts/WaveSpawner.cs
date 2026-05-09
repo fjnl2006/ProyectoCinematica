@@ -21,7 +21,10 @@ public class WaveSpawner : MonoBehaviour
     [SerializeField] private float velocidadExtraPorOleada = 0.3f;
     [SerializeField] private int vidaBase = 3;
     [SerializeField] private int vidaExtraPorOleada = 1;
-
+    
+    public int currentBulletDamage = 1;
+    public float currentRadius = 3;
+    
     // Estado interno
     private int oleadaActual = 0;
     private int enemigosVivos = 0;
@@ -55,6 +58,15 @@ public class WaveSpawner : MonoBehaviour
             }
 
             oleadaActual++;
+            if (oleadaActual % 2 == 0)
+            {
+                currentBulletDamage++; 
+            }
+
+            if (oleadaActual == 6)
+            {
+                currentRadius += 0.5f;
+            }
             int cantidadEnemigos = enemigosBase + (oleadaActual - 1) * extraPorOleada;
             float velEnemigos = velocidadBase + (oleadaActual - 1) * velocidadExtraPorOleada;
             int vidaEnemigos = vidaBase + (oleadaActual - 1) * vidaExtraPorOleada;

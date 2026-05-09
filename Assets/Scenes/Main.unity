@@ -2631,7 +2631,7 @@ MonoBehaviour:
   gravedad: 9.8
   pasosTrayectoria: 50
   direccion: {fileID: 726169942}
-  radioMarcador: 0.5
+  radioMarcador: 3
   prefabBala: {fileID: 4112434651237991089, guid: ca3de55f330d0f3499861a64617e253e, type: 3}
   canvas: {fileID: 811009950}
   shootTime: 0
@@ -4675,6 +4675,8 @@ MonoBehaviour:
   velocidadExtraPorOleada: 0.3
   vidaBase: 3
   vidaExtraPorOleada: 1
+  currentBulletDamage: 1
+  currentRadius: 3
 --- !u!4 &695300738
 Transform:
   m_ObjectHideFlags: 0
@@ -8560,15 +8562,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4222778433013342, guid: 4d5dd61ef030a5444956059cd95f4090, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 18.69
+      value: 19.31
       objectReference: {fileID: 0}
     - target: {fileID: 4222778433013342, guid: 4d5dd61ef030a5444956059cd95f4090, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.55
+      value: 3.99
       objectReference: {fileID: 0}
     - target: {fileID: 4222778433013342, guid: 4d5dd61ef030a5444956059cd95f4090, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -63.29
+      value: -64.35
       objectReference: {fileID: 0}
     - target: {fileID: 4222778433013342, guid: 4d5dd61ef030a5444956059cd95f4090, type: 3}
       propertyPath: m_LocalRotation.w
@@ -13099,7 +13101,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 1000
-  field of view: 93
+  field of view: 71
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -13767,6 +13769,6 @@ SceneRoots:
   - {fileID: 1154798612}
   - {fileID: 37512162}
   - {fileID: 811009954}
-  - {fileID: 1718795329}
   - {fileID: 1685408572}
   - {fileID: 1920539284}
+  - {fileID: 1718795329}

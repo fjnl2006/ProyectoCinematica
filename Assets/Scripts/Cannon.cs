@@ -1,7 +1,6 @@
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections.Generic;
 
 public class Cannon : MonoBehaviour
 {
@@ -22,7 +21,7 @@ public class Cannon : MonoBehaviour
     [SerializeField] private float radioMarcador = 0.5f;
 
     [SerializeField] private GameObject prefabBala;
-    
+
     private GameObject trajectoriaGO;
     private LineRenderer lineRenderer;
     private GameObject marcadorGO;
@@ -41,16 +40,16 @@ public class Cannon : MonoBehaviour
         //canvas.SetActive(false);
     }
 
-    
+
     void FixedUpdate()
     {
         if (lookInput != Vector2.zero)
         {
             currentAngleY += lookInput.x * rotationSpeed;
-            currentAngleY  = Mathf.Clamp(currentAngleY, min, max);
+            currentAngleY = Mathf.Clamp(currentAngleY, min, max);
 
             currentAngleX -= lookInput.y * rotationSpeed;
-            currentAngleX  = Mathf.Clamp(currentAngleX, -50f, 70f);
+            currentAngleX = Mathf.Clamp(currentAngleX, -50f, 70f);
 
             transform.rotation = Quaternion.Euler(currentAngleX, currentAngleY, 0);
         }
@@ -67,7 +66,7 @@ public class Cannon : MonoBehaviour
         }
     }
 
-    public void OnShoot(InputAction.CallbackContext context)    
+    public void OnShoot(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
         if (shootTime > 3f)
@@ -77,50 +76,50 @@ public class Cannon : MonoBehaviour
             GameObject bala = Instantiate(prefabBala, direccion.position, Quaternion.identity);
             Shoot scriptBala = bala.GetComponent<Shoot>();
             scriptBala.Inicializar(velocidadInicial, gravedad);
-            Destroy(bala,bulletTime);
+            Destroy(bala, bulletTime);
             shootTime = 0f;
             //canvas.SetActive(false);
         }
-       
+
     }
-   
+
     void CrearTrayectoriaGO()
     {
         trajectoriaGO = new GameObject("Trayectoria_Cannon");
-        
+
 
         lineRenderer = trajectoriaGO.AddComponent<LineRenderer>();
         lineRenderer.useWorldSpace = true;
         lineRenderer.positionCount = 0;
         lineRenderer.startWidth = 0.15f;
-        lineRenderer.endWidth   = 0.04f;
+        lineRenderer.endWidth = 0.04f;
 
-        
+
         Material mat = new Material(Shader.Find("Sprites/Default"));
-        lineRenderer.material    = mat;
-        lineRenderer.startColor  = Color.yellow;
-        lineRenderer.endColor    = new Color(1f, 0.3f, 0f);
+        lineRenderer.material = mat;
+        lineRenderer.startColor = Color.yellow;
+        lineRenderer.endColor = new Color(1f, 0.3f, 0f);
 
-        
+
         lineRenderer.sortingOrder = 10;
     }
 
     void CrearMarcadorGO()
     {
         marcadorGO = new GameObject("Marcador_Impacto");
-        
+
 
         marcadorLR = marcadorGO.AddComponent<LineRenderer>();
-        marcadorLR.useWorldSpace  = true;
-        marcadorLR.loop           = true;
-        marcadorLR.startWidth     = 0.08f;
-        marcadorLR.endWidth       = 0.08f;
-        marcadorLR.sortingOrder   = 10;
+        marcadorLR.useWorldSpace = true;
+        marcadorLR.loop = true;
+        marcadorLR.startWidth = 0.08f;
+        marcadorLR.endWidth = 0.08f;
+        marcadorLR.sortingOrder = 10;
 
         Material mat = new Material(Shader.Find("Sprites/Default"));
-        marcadorLR.material   = mat;
+        marcadorLR.material = mat;
         marcadorLR.startColor = new Color(1f, 0.15f, 0f, 0.95f);
-        marcadorLR.endColor   = new Color(1f, 0.85f, 0f, 0.95f);
+        marcadorLR.endColor = new Color(1f, 0.85f, 0f, 0.95f);
 
         int seg = 32;
         marcadorLR.positionCount = seg;
@@ -134,14 +133,14 @@ public class Cannon : MonoBehaviour
         marcadorGO.SetActive(false);
     }
 
-    
+
 
     public void Look(InputAction.CallbackContext context)
     {
         lookInput = context.ReadValue<Vector2>();
     }
 
-   
+
     void DibujarTrayectoria(Vector3 origen, Vector3 dirUnit, float v, float g)
     {
         float ysuelo = suelo != null ? suelo.position.y : 0f;
@@ -178,9 +177,9 @@ public class Cannon : MonoBehaviour
         lineRenderer.positionCount = puntos.Count;
         lineRenderer.SetPositions(puntos.ToArray());
 
-         
+
         marcadorGO.SetActive(true);
-         
+
         int segM = marcadorLR.positionCount;
         Vector3[] ptsM = new Vector3[segM];
         for (int i = 0; i < segM; i++)
@@ -195,12 +194,12 @@ public class Cannon : MonoBehaviour
         marcadorLR.SetPositions(ptsM);
     }
 
-   
+
     float CalcularTiempoVuelo(float y0, float vy, float g, float ysuelo)
     {
-        float a    = 0.5f * g;
-        float b    = -vy;
-        float c    = -(y0 - ysuelo);
+        float a = 0.5f * g;
+        float b = -vy;
+        float c = -(y0 - ysuelo);
         float disc = b * b - 4f * a * c;
 
         if (disc < 0f) return 1f;
@@ -217,8 +216,13 @@ public class Cannon : MonoBehaviour
 
     void OnDestroy()
     {
-        
+
         if (trajectoriaGO != null) Destroy(trajectoriaGO);
-        if (marcadorGO    != null) Destroy(marcadorGO);
+        if (marcadorGO != null) Destroy(marcadorGO);
+    }
+
+    public void ResetInput()
+    {
+        lookInput = Vector2.zero;
     }
 }

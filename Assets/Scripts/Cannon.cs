@@ -75,8 +75,8 @@ public class Cannon : MonoBehaviour
 
             GameObject bala = Instantiate(prefabBala, direccion.position, Quaternion.identity);
             Shoot scriptBala = bala.GetComponent<Shoot>();
-            scriptBala.dañoExplosion = WaveSpawner.instance.currentBulletDamage;
-            scriptBala.radius = WaveSpawner.instance.currentRadius;
+            //scriptBala.dañoExplosion = WaveSpawner.instance.currentBulletDamage;
+           // scriptBala.radius = WaveSpawner.instance.currentRadius;
             scriptBala.Inicializar(velocidadInicial, gravedad);
             Destroy(bala, bulletTime);
             shootTime = 0f;

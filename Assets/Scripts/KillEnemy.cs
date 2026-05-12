@@ -2,12 +2,13 @@ using UnityEngine;
 
 public class KillEnemy : MonoBehaviour
 {
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        
+        if (collision.gameObject.CompareTag("Arma"))
         {
-            Debug.Log("La puerta ha matado a " + other.gameObject.name);
+           
+            Destroy(gameObject);
         }
     }
-
 }

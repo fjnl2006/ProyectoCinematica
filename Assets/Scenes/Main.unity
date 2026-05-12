@@ -4677,7 +4677,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &695300737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4690,7 +4690,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5da13ff62df6c604d8944287093c65fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WaveSpawner
-  prefabEnemigo: {fileID: 5763423637906309994, guid: 240b20365ab6cbb49afd24020132132e, type: 3}
+  prefabEnemigo: {fileID: 1582683576793171957, guid: d71d7f7e92939334b8774144b3d116fd, type: 3}
   puntosSpawn:
   - {fileID: 1040917016}
   - {fileID: 897875454}
@@ -4698,14 +4698,8 @@ MonoBehaviour:
   - {fileID: 174788567}
   - {fileID: 1337429542}
   canonTransform: {fileID: 537793945}
-  enemigosBase: 3
-  extraPorOleada: 2
-  tiempoEntreOleadas: 5
-  tiempoEntreSpawns: 0.5
-  velocidadBase: 3
-  velocidadExtraPorOleada: 0.3
-  vidaBase: 3
-  vidaExtraPorOleada: 1
+  oleadas:
+  - {fileID: 11400000, guid: 13bc5ddbe0a00c946836ec6f351f4ac8, type: 2}
 --- !u!4 &695300738
 Transform:
   m_ObjectHideFlags: 0

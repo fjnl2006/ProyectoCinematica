@@ -11,11 +11,15 @@ public class Enemy : MonoBehaviour
 
     private bool muerto = false;
 
-    public void Inicializar(Transform targetCannon, float vel = 3f, int hp = 3)
+    // Referencia al WaveSpawner para notificar cuando el enemigo muere(metodo de abajo)
+    private WaveSpawner waveSpawner;
+
+    public void Inicializar(Transform targetCannon, float vel = 3f, int hp = 3, WaveSpawner spawner = null)
     {
         objetivo = targetCannon;
         velocidad = vel;
         vida = hp;
+        waveSpawner = spawner; // Asigna su propio wave spwaner por si hacemos mas de 1
     }
 
     void Update()
@@ -35,7 +39,6 @@ public class Enemy : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.deltaTime * 8f);
     }
 
-
     public void RecibirDaño(int cantidad = 1)
     {
         if (muerto) return;
@@ -46,6 +49,12 @@ public class Enemy : MonoBehaviour
     private void Morir()
     {
         muerto = true;
+
+        // Avisa al spawner que el enemigo ha muerto
+        if (waveSpawner != null)
+        {
+            waveSpawner.EnemyMuerto();
+        }
 
         Destroy(gameObject);
     }

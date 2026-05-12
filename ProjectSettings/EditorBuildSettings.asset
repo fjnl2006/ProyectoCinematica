@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: "Assets/Scenes/Menu1\xBA.unity"
+    path: Assets/Scenes/EscenaPlay.unity
     guid: 0b4a8f8420836274c868c067f1469196
   - enabled: 1
     path: Assets/Scenes/Main.unity

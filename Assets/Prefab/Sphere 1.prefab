@@ -128,8 +128,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Shoot
   radius: 3
-  "da\xF1oExplosion": 1
-  prefabExplosion: {fileID: 0}
+  "da\xF1oExplosion": 3
+  prefabExplosion: {fileID: 1478314613700728, guid: be6847dd39ab95f4daa2ed98e4f90564, type: 3}
+  "duracionDa\xF1o": 10
 --- !u!54 &5245674903930812715
 Rigidbody:
   m_ObjectHideFlags: 0

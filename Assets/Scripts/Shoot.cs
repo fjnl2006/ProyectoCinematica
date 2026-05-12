@@ -6,17 +6,16 @@ public class Shoot : MonoBehaviour
     private float gravedad;
     private float tiempoVida;
     private Vector3 spawnPos;
-
+ 
     [Header("Explosión")]
     public float radius = 3f;
-    public int dañoExplosion = 1;           // Daño que aplica la explosión a cada enemigo
-    public GameObject prefabExplosion;       // Partículas / VFX (opcional)
-    [Header("Daño en el área")] 
+    public int dañoExplosion = 1;
+    public GameObject prefabExplosion;
+    [Header("Daño en el área")]
     public float duracionDaño = 0.5f;
-    
+ 
     private bool haExplotado = false;
-    private Vector3 ultimaPosicionColision;
-    
+ 
     public void Inicializar(Vector3 velocidad, float gravedad)
     {
         this.velocidadInicial = velocidad;
@@ -24,59 +23,76 @@ public class Shoot : MonoBehaviour
         this.tiempoVida = 0f;
         this.spawnPos = transform.position;
     }
-
+ 
     void Update()
     {
+        if (haExplotado) return;
+ 
         tiempoVida += Time.deltaTime;
         float t = tiempoVida;
-
-        // Cinemática clásica: pos = pos0 + v0·t + 0.5·a·t²
+ 
         float x = velocidadInicial.x * t;
         float y = velocidadInicial.y * t - 0.5f * gravedad * t * t;
         float z = velocidadInicial.z * t;
-
-        transform.position = spawnPos + new Vector3(x, y, z);
+ 
+        Vector3 nuevaPos = spawnPos + new Vector3(x, y, z);
+ 
+        // Detectar si hemos cruzado el suelo entre frames (evita atravesar el suelo)
+        float alturaActual = transform.position.y;
+        float alturaNueva = nuevaPos.y;
+ 
+        if (alturaNueva <= 0.05f && alturaActual > 0.05f)
+        {
+            // Calcular posición exacta de impacto en Y=0
+            float fraccion = alturaActual / (alturaActual - alturaNueva);
+            Vector3 impacto = Vector3.Lerp(transform.position, nuevaPos, fraccion);
+            impacto.y = 0f;
+            transform.position = impacto;
+            Explotar();
+            return;
+        }
+ 
+        transform.position = nuevaPos;
     }
-
+ 
     private void OnCollisionEnter(Collision other)
     {
         if (haExplotado) return;
-        
-        // Solo explota si colisiona con el suelo (tag "Ground")
-        if (other.gameObject.CompareTag("Ground"))
+ 
+        // Por si el collider físico sí detecta el golpe (doble seguridad)
+        if (other.gameObject.CompareTag("Floor") || other.gameObject.CompareTag("Ground"))
         {
-            ultimaPosicionColision = transform.position;
+            transform.position = other.contacts[0].point;
             Explotar();
         }
         else
         {
-            // Si no es suelo, solo destruye la bala sin daño
             Destroy(gameObject);
         }
     }
-
+ 
     private void Explotar()
     {
         haExplotado = true;
-        // Partículas opcionales
+ 
         if (prefabExplosion != null)
         {
-            GameObject vfxFuego = Instantiate(prefabExplosion, ultimaPosicionColision, Quaternion.identity);
-            
-            FireDamageVFX damageComponent = vfxFuego.AddComponent<FireDamageVFX>();
+            GameObject vfxFuego = Instantiate(prefabExplosion, transform.position, Quaternion.identity);
+            FireDamageVFX damageComponent = vfxFuego.GetComponent<FireDamageVFX>();
+            if (damageComponent == null)
+                damageComponent = vfxFuego.AddComponent<FireDamageVFX>();
+ 
             damageComponent.Inicializar(radius, dañoExplosion, duracionDaño);
         }
         else
         {
+            // Sin VFX: daño directo en área
             AplicarDaño();
         }
-
-        // Daño en área a todos los enemigos en el radio
-        
-
+ 
         Destroy(gameObject);
     }
-
+ 
     private void AplicarDaño()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
@@ -87,8 +103,7 @@ public class Shoot : MonoBehaviour
                 enemy.RecibirDaño(dañoExplosion);
         }
     }
-
-    // Dibuja el radio de explosión en el editor (solo para debug)
+ 
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = new Color(1f, 0.3f, 0f, 0.4f);

@@ -1,54 +1,30 @@
-using NUnit.Framework;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class ChangeCamera : MonoBehaviour
 {
-    public Door Door;
-    public List<Camera> cameras;
-    public int index = 0;
-    public Camera currentCamera;
+    [SerializeField] private GameObject[] camarasDelPuente;
+    private int indiceActual = 0;
 
-    void Awake()
+    // Llama a esto cuando pulses el botón de cambiar cámara
+    public void CiclarCamara()
     {
-        SetCamera(0);
+        camarasDelPuente[indiceActual].SetActive(false);
+        indiceActual = (indiceActual + 1) % camarasDelPuente.Length;
+        camarasDelPuente[indiceActual].SetActive(true);
     }
 
-    // Este método será llamado por el sistema de eventos del PlayerInput
-    public void OnCameraAction(InputAction.CallbackContext context)
+    // El BridgeManager llamará a esto al entrar al puente
+    public void ActivarSistema()
     {
-        if (context.performed)
+        camarasDelPuente[indiceActual].SetActive(true);
+    }
+
+    // El BridgeManager llamará a esto al salir a la vista cenital
+    public void DesactivarSistema()
+    {
+        foreach (var cam in camarasDelPuente)
         {
-            NextCamera();
-        }
-    }
-
-
-    void NextCamera()
-    {
-        index++;
-        if (index >= cameras.Count)
-            index = 0;
-
-        SetCamera(index);
-    }
-
-    void SetCamera(int i)
-    {
-        foreach (Camera cam in cameras)
-            cam.gameObject.SetActive(false);
-
-        currentCamera = cameras[i];
-        currentCamera.gameObject.SetActive(true);
-        Debug.Log("Cámara cambiada a: " + currentCamera.name);
-    }
-    public void OnDoorAction(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-        {
-            Debug.Log("OnDoorAction triggered");
-            StartCoroutine(Door.BajarYSubir());
+            cam.SetActive(false);
         }
     }
 }

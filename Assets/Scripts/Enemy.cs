@@ -35,7 +35,7 @@ public class Enemy : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.deltaTime * 8f);
     }
 
-    /// <summary>Recibe daño. Llamado desde Shoot.cs al explotar.</summary>
+
     public void RecibirDaño(int cantidad = 1)
     {
         if (muerto) return;
@@ -46,8 +46,7 @@ public class Enemy : MonoBehaviour
     private void Morir()
     {
         muerto = true;
-        // Aquí puedes instanciar partículas de muerte, sonido, etc.
-        WaveSpawner.instance?.EnemyMuerto();
+
         Destroy(gameObject);
     }
 }

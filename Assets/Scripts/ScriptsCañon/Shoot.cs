@@ -60,7 +60,7 @@ public class Shoot : MonoBehaviour
         if (haExplotado) return;
  
         // Por si el collider físico sí detecta el golpe (doble seguridad)
-        if (other.gameObject.CompareTag("Floor") || other.gameObject.CompareTag("Ground"))
+        if (other.gameObject.CompareTag("Floor"))
         {
             transform.position = other.contacts[0].point;
             Explotar();
@@ -97,11 +97,7 @@ public class Shoot : MonoBehaviour
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
         foreach (Collider col in colliders)
-        {
-            Enemy enemy = col.GetComponent<Enemy>();
-            if (enemy != null)
-                enemy.RecibirDaño(dañoExplosion);
-        }
+            EnemyHealth.IntentarDaño(col, dañoExplosion, "explosion");
     }
  
     private void OnDrawGizmosSelected()

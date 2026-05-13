@@ -48,3 +48,12 @@ El uso de modelos complejos para las cadenas generaba errores críticos de colis
 
 ---
 *Proyecto desarrollado para el Grado en Diseño y Desarrollo de Videojuegos.*
+
+
+### Link Del Repositorio
+
+https://github.com/fjnl2006/ProyectoCinematica
+
+### Link Del OneDrive/Video
+
+https://onedrive.live.com/?redeem=aHR0cHM6Ly8xZHJ2Lm1zL2YvYy83MzcyMmMwMGNkZDJkYTA3L0lnQ0tqdUxpSDc3c1FyWExScG9pckJWUUFUZnE4NlY4WWxnLTZVa0VKZjFpSkVZP2U9dlJHbzUz&id=73722C00CDD2DA07%21se2e28e8abe1f42ecb5cb469a22ac1550&cid=73722C00CDD2DA07

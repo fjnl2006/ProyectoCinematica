@@ -7,37 +7,44 @@ El núcleo del juego reside en el control directo de **4 cañones** estratégica
 
 ## Mecánicas Principales
 
-### 1. Sistema de Artillería
+### 1. Sistema de Artillería y Trayectorias
 * **Control Manual:** Apuntado dinámico mediante el ratón.
 * **Física de Proyectiles:** Los disparos cuentan con caída de bala (gravedad) y rastro visual mediante `LineRenderer`.
-* **Daño de Área:** Impactos explosivos con daño AOE para controlar grandes grupos.
+* **Visualización de Predicción:** Implementación de un sistema de trazado de trayectoria parabólica en tiempo real.
 
 ### 2. Compuertas y Puentes (Física Aplicada)
-* **Puerta Principal:** Actuable mediante teclado. Utiliza un sistema motorizado con *cooldown*.
-* **Letalidad Dinámica:** Gracias a un script de detección de velocidad angular, la puerta solo elimina enemigos cuando está en movimiento (subiendo o bajando), permitiendo el paso cuando está en reposo.
-* **Física de Cadenas:** Implementación de cadenas realistas mediante una jerarquía de *Empties* y `HingeJoints`, optimizada para evitar errores de colisión cóncava.
+* **Puerta Principal:** Actuable mediante teclado con sistema motorizado y *cooldown*.
+* **Letalidad Dinámica:** La puerta solo elimina enemigos cuando su `angularVelocity` supera un umbral, permitiendo que sea segura en reposo.
+* **Física de Cadenas:** Simulación mediante jerarquía de *Empties* y `HingeJoints`, optimizada para rendimiento y estabilidad.
 
-### 3. Sistema de Enemigos
-* **Oleadas Asíncronas:** Los enemigos aparecen de forma constante pero asimétrica desde 4 islas diferentes.
-* **Spawning Aleatorio:** La cantidad y el ritmo de las hordas varían para evitar patrones previsibles, obligando al jugador a vigilar todos los frentes simultáneamente.
+### 3. Sistema de Enemigos y Spawning
+* **Oleadas Asíncronas:** Los enemigos aparecen desde 4 islas diferentes con ritmos descompasados.
+* **Asimetría Táctica:** Flujo constante de enemigos que evita patrones simétricos, forzando la atención multifrente.
+
+## Retos Técnicos y Soluciones Implementadas
+
+### 💡 Desafío de Escalabilidad: Spawners Multifrente
+Uno de los mayores retos fue el **escalado de los spawners** tras expandir el juego a 4 puentes. La gestión individual de cada flujo de enemigos presentaba complicaciones en la sincronización y el rendimiento.
+* **Solución:** Se refactorizó el sistema de spawn para trabajar de forma asíncrona, permitiendo que cada puente gestione su propia carga sin interferir en el ritmo global, logrando una experiencia de "asedio total" fluida.
+
+### 🎯 Precisión Balística: El Sistema de Trayectorias
+La implementación de la **trayectoria visual del cañón** presentó complicaciones matemáticas significativas. Lograr que el `LineRenderer` coincidiera exactamente con la parábola física real de la bala de cañón requirió un ajuste fino de los vectores de fuerza y gravedad.
+* **Solución:** Se desarrolló un algoritmo de predicción que calcula la posición del proyectil en múltiples puntos futuros basándose en la velocidad inicial y la gravedad de Unity, garantizando que el jugador siempre tenga una referencia visual fiable antes de disparar.
+
+### 🔗 Estabilidad Física: El Problema de las Cadenas
+El uso de modelos complejos para las cadenas generaba errores críticos de colisión ("Concave Mesh Colliders").
+* **Solución:** Se migró a un sistema de colisionadores simplificados sobre objetos vacíos, eliminando los errores de consola y evitando las "explosiones" físicas al interactuar con la puerta.
 
 ## Controles
 | Acción | Tecla / Input |
 | :--- | :--- |
 | **Disparar** | Clic Izquierdo |
 | **Apuntar** | Movimiento del Ratón |
-| **Cambiar de Cañón/Puente** | Teclas 1, 2, 3, 4 |
+| **Cambiar de Puente** | Teclas 1, 2, 3, 4 |
 | **Cámara Zenital** | Espacio |
-| **Cambiar Vista de Cámara** | Tab |
+| **Cambiar Cámara** | Tab |
 | **Puerta Principal** | Q |
 | **Puerta de Rejas** | E |
 
-## Decisiones de Diseño y Soluciones Técnicas
-Durante el desarrollo se enfrentaron varios retos de simulación física:
-* **Problema de las Cadenas:** Inicialmente, el uso de `Mesh Colliders` complejos provocaba errores de "Concave Mesh". Se solucionó sustituyéndolos por una cadena de huesos físicos (*Rigidbodies* con *HingeJoints*) en objetos vacíos.
-* **Optimización de Trampas:** Para evitar que la puerta matara enemigos simplemente por estar cerrada, se implementó una validación en el script `KillEnemy` que consulta el `angularVelocity` del Rigidbody antes de aplicar la lógica de muerte.
-
-## Instalación
-1. Clona el repositorio: `git clone https://github.com/tu-usuario/castle-defense.git`
-2. Abre el proyecto en **Unity 2021.3** o superior.
-3. Carga la escena `Demo.unity` ubicada en `Assets/Scenes/`.
+---
+*Proyecto desarrollado para el Grado en Diseño y Desarrollo de Videojuegos.*

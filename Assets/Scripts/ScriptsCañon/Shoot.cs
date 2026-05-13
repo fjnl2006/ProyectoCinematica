@@ -97,11 +97,7 @@ public class Shoot : MonoBehaviour
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
         foreach (Collider col in colliders)
-        {
-            Enemy enemy = col.GetComponent<Enemy>();
-            if (enemy != null)
-                enemy.RecibirDaño(dañoExplosion);
-        }
+            EnemyHealth.IntentarDaño(col, dañoExplosion, "explosion");
     }
  
     private void OnDrawGizmosSelected()

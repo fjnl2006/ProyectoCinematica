@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1250498814000965356}
   - component: {fileID: 247518819018632973}
   - component: {fileID: 3898579809737338311}
+  - component: {fileID: 8200112244555330011}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -127,6 +128,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6092171605b3611469573aa5d89d7d09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  vida: 3
   velocidad: 3
-  objetivo: {fileID: 0}
+  amplitudDesvio: 1.5
+  frecuenciaDesvio: 1
+--- !u!114 &8200112244555330011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5763423637906309994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7c3e91b4f2d5849a8e1c0d3b5f6a7e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
+  vidaInicial: 3

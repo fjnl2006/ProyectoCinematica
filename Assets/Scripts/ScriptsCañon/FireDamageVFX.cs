@@ -1,19 +1,19 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class FireDamageVFX : MonoBehaviour
 {
     private float radius;
     private int daño;
-    private float duracionDaño;
     private SphereCollider damageCollider;
     private bool inicializado = false;
+    private readonly HashSet<EnemyHealth> enemigosYaDañados = new HashSet<EnemyHealth>();
  
     public void Inicializar(float radiusExplosion, int dañoExplosion, float duracion)
     {
         this.radius = radiusExplosion;
         this.daño = dañoExplosion;
-        this.duracionDaño = duracion;
- 
+
         damageCollider = gameObject.AddComponent<SphereCollider>();
         damageCollider.isTrigger = true;
         damageCollider.radius = radius;
@@ -31,27 +31,24 @@ public class FireDamageVFX : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!inicializado) return;
- 
-        Enemy enemy = other.GetComponent<Enemy>();
-        if (enemy != null)
-        {
-            Debug.Log($"[FireDamageVFX] OnTriggerEnter — {other.gameObject.name} recibe {daño} de daño");
-            enemy.RecibirDaño(daño, "fuego");
-        }
+        AplicarDañoA(other);
     }
- 
+
     private void AplicarDañoInstantaneo()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, radius);
         foreach (Collider col in colliders)
-        {
-            Enemy enemy = col.GetComponent<Enemy>();
-            if (enemy != null)
-            {
-                Debug.Log($"[FireDamageVFX] DañoInstantaneo — {col.gameObject.name} recibe {daño} de daño");
-                enemy.RecibirDaño(daño, "fuego");
-            }
-        }
+            AplicarDañoA(col);
+    }
+
+    private void AplicarDañoA(Collider col)
+    {
+        EnemyHealth salud = col.GetComponentInParent<EnemyHealth>();
+        if (salud == null || salud.EstaMuerto) return;
+        if (!enemigosYaDañados.Add(salud)) return;
+
+        Debug.Log($"[FireDamageVFX] {col.gameObject.name} recibe {daño} de daño (vida compartida)");
+        salud.RecibirDaño(daño, "fuego");
     }
 
 

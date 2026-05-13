@@ -803,6 +803,7 @@ GameObject:
   - component: {fileID: 2251746776991837187}
   - component: {fileID: -4468201040919919309}
   - component: {fileID: 640138357612929339}
+  - component: {fileID: 4511228899900112233}
   - component: {fileID: 1885316970431502975}
   m_Layer: 3
   m_Name: Zombie
@@ -889,10 +890,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6092171605b3611469573aa5d89d7d09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  vida: 3
   velocidad: 1
   amplitudDesvio: 1.5
   frecuenciaDesvio: 1
+--- !u!114 &4511228899900112233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6084662208192912419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7c3e91b4f2d5849a8e1c0d3b5f6a7e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
+  vidaInicial: 3
 --- !u!136 &1885316970431502975
 CapsuleCollider:
   m_ObjectHideFlags: 0

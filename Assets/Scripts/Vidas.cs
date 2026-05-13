@@ -5,35 +5,21 @@ using TMPro;
 
 public class Vidas : MonoBehaviour
 {
+    public static Vidas Instance { get; private set; }
     public int vidas = 3;
 
     public TMP_Text vidasText;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Awake()
     {
+        Instance = this;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
 
-    private void OnTriggerEnter(Collider other)
+    public void ActualizarUI()
     {
         vidas--;
-        ActualizarUI();
-
-        if (vidas <= 0)
-        {
-            Debug.Log("Game Over");
-            // Aquí puedes cargar una escena de Game Over, etc.
-        }
-
-        
-    }
-    void ActualizarUI()
-    {
+        Debug.Log("Vidas restantes: " + vidas);
         if (vidasText != null)
             vidasText.text = "Vidas: " + vidas;
     }

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [System.Serializable]
-public struct DatosOleada
+public struct LevelsWavesSO
 {
     [Header("Enemigos de esta oleada")]
     public int cantidadEnemigos;
@@ -18,5 +18,5 @@ public class LevelWavesSO : ScriptableObject
 
     [Header("Lista de Oleadas")]
     [Tooltip("Define aquí cada oleada una por una")]
-    public DatosOleada[] oleadas;
+    public LevelsWavesSO[] oleadas;
 }

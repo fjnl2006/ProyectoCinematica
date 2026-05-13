@@ -47,7 +47,7 @@ public class Enemy : MonoBehaviour
         // 2. Calcular un vector perpendicular (para el desvío a izquierda o derecha)
         Vector3 perpendicular = Vector3.Cross(dirNormalizada, Vector3.up);
 
-        // 3. Aplicar una onda matemática (Senoidal) basada en el tiempo para hacer el zig-zag natural
+        // 3. uN SENO para la variabilidad y que no sea una fila de enemigos tan predecible, con un desfase aleatorio para que no estén sincronizados
         float oscilacion = Mathf.Sin((Time.time * miFrecuenciaAleatoria) + desfaseAleatorio) * amplitudDesvio;
 
         // 4. Suavizar la oscilación a medida que se acercan al cañón para que puedan ser aplastados/disparados bien

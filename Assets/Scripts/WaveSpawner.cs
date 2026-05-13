@@ -48,7 +48,7 @@ public class WaveSpawner : MonoBehaviour
                 yield return new WaitForSeconds(configuracionOleadas.tiempoEntreOleadas);
             }
 
-            DatosOleada oleadaActual = configuracionOleadas.oleadas[indiceOleadaActual];
+            LevelsWavesSO oleadaActual = configuracionOleadas.oleadas[indiceOleadaActual];
             onNuevaOleada?.Invoke(indiceOleadaActual + 1);
 
             yield return StartCoroutine(SpawnOleada(oleadaActual));
@@ -58,7 +58,7 @@ public class WaveSpawner : MonoBehaviour
         onJuegoTerminado?.Invoke();
     }
 
-    IEnumerator SpawnOleada(DatosOleada datos)
+    IEnumerator SpawnOleada(LevelsWavesSO datos)
     {
         for (int i = 0; i < datos.cantidadEnemigos; i++)
         {

@@ -56,14 +56,9 @@ public class Cannon : MonoBehaviour
 
         DibujarTrayectoria(direccion.position, direccion.forward, velocidadBala, gravedad);
         shootTime += Time.deltaTime;
-        if (shootTime < 2)
-        {
-            canvas.SetActive(true);
-        }
-        else
-        {
-            canvas.SetActive(false);
-        }
+
+        // NOTA: El Canvas ahora se gestiona desde BridgeManager.SetActiveActionMap()
+        // No manipular aquí para evitar conflictos
     }
 
     public void OnShoot(InputAction.CallbackContext context)

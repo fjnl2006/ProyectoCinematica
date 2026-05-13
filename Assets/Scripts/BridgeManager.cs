@@ -8,9 +8,10 @@ public class BridgeManager : MonoBehaviour
     [SerializeField] private GameObject topDownCamera;
 
     [Header("Listas de Puentes (Mismo Orden)")]
-    [SerializeField] private ChangeCamera[] cameraChangers; //aqui va el camrechchanger que tiene cada cañon para rotar la camara de cada puente
+    [SerializeField] private ChangeCamera[] cameraChangers;
     [SerializeField] private Cannon[] cannons;
     [SerializeField] private Door[] doors;
+    [SerializeField] private ControlPuerta[] drawbridges;
 
     private int activeBridgeIndex = 0;
 
@@ -28,7 +29,6 @@ public class BridgeManager : MonoBehaviour
     // INPUTS: MAPA CAÑON
     public void OnReturnToTopDown(InputAction.CallbackContext context) { if (context.performed) SetTopDownView(); }
 
-    // para ciclar la cámara del puente activo, se llama desde el input del mapa de cañón
     public void OnCycleCamera(InputAction.CallbackContext context)
     {
         if (context.performed && cameraChangers.Length > activeBridgeIndex && cameraChangers[activeBridgeIndex] != null)
@@ -48,7 +48,21 @@ public class BridgeManager : MonoBehaviour
         }
     }
 
-    // logica para el cmabvio de puente y inputs maps
+    public void OnMoverPuerta(InputAction.CallbackContext context)
+    {
+        Debug.Log($"[BridgeManager] Input MoverPuerta detectado. Reenviando a puente {activeBridgeIndex}");
+
+        if (drawbridges.Length > activeBridgeIndex && drawbridges[activeBridgeIndex] != null)
+        {
+            drawbridges[activeBridgeIndex].OnMoverPuerta(context);
+        }
+        else
+        {
+            Debug.LogWarning($"[BridgeManager] No hay puerta levadiza asignada en el índice {activeBridgeIndex} del array Drawbridges");
+        }
+    }
+
+    // LÓGICA DE TRANSICIÓN
     private void SwitchToBridge(int index)
     {
         activeBridgeIndex = index;
@@ -59,12 +73,17 @@ public class BridgeManager : MonoBehaviour
         {
             if (i == index)
             {
-                cameraChangers[i].ActivarSistema(); // Enciende la cámara actual de este puente
+                cameraChangers[i].ActivarSistema();
             }
             else
             {
-                cameraChangers[i].DesactivarSistema(); // Apaga las cámaras de los demás
+                cameraChangers[i].DesactivarSistema();
                 cannons[i].ResetInput();
+
+                if (drawbridges.Length > i && drawbridges[i] != null)
+                {
+                    drawbridges[i].OnMoverPuerta(new InputAction.CallbackContext());
+                }
             }
         }
     }
@@ -76,8 +95,13 @@ public class BridgeManager : MonoBehaviour
 
         for (int i = 0; i < cameraChangers.Length; i++)
         {
-            cameraChangers[i].DesactivarSistema(); // Apaga todas las cámaras de los puentes
+            cameraChangers[i].DesactivarSistema();
             cannons[i].ResetInput();
+
+            if (drawbridges.Length > i && drawbridges[i] != null)
+            {
+                drawbridges[i].OnMoverPuerta(new InputAction.CallbackContext());
+            }
         }
     }
 }

@@ -62,7 +62,7 @@
                 },
                 {
                     "name": "PuertaPuente",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "e74bf6f3-86ee-4ba7-b97f-755979c57193",
                     "expectedControlType": "",
                     "processors": "",

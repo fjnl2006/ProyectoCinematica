@@ -6,64 +6,67 @@ public class WaveSpawner : MonoBehaviour
     [Header("Prefab y punto de spawn")]
     [SerializeField] private GameObject prefabEnemigo;
     [SerializeField] private Transform[] puntosSpawn;
-    [SerializeField] private Transform canonTransform;
+    [SerializeField] private Transform objetivoDeEstePuente;
 
-    [Header("Configuración de oleadas")]
-    [SerializeField] private int enemigosBase = 3;
-    [SerializeField] private int extraPorOleada = 2;
-    [SerializeField] private float tiempoEntreOleadas = 5f;
-    [SerializeField] private float tiempoEntreSpawns = 0.5f;
+    [Header("Datos de Oleadas (Scriptable Object)")]
+    [SerializeField] private LevelWavesSO configuracionOleadas;
 
-    [Header("Escalado de dificultad")]
-    [SerializeField] private float velocidadBase = 3f;
-    [SerializeField] private float velocidadExtraPorOleada = 0.3f;
-    [SerializeField] private int vidaBase = 3;
-    [SerializeField] private int vidaExtraPorOleada = 1;
+    [Header("Variabilidad (Desincronización)")]
+    [Tooltip("Retraso máximo al empezar la primera oleada para que los puentes no vayan a la vez")]
+    [SerializeField] private float maxRetrasoInicial = 2f;
+    [Tooltip("Variación de tiempo (+/-) al instanciar cada enemigo")]
+    [SerializeField] private float variacionSpawn = 0.2f;
 
-    private int oleadaActual = 0;
+    private int indiceOleadaActual = 0;
     private int enemigosVivos = 0;
     private bool esperando = false;
 
     public System.Action<int> onNuevaOleada;
     public System.Action onJuegoTerminado;
 
-    // ELIMINADO: public static WaveSpawner instance; y el método Awake()
-
     void Start()
     {
-        StartCoroutine(RutinaOleadas());
+        if (configuracionOleadas != null && configuracionOleadas.oleadas.Length > 0)
+        {
+            StartCoroutine(RutinaOleadas());
+        }
     }
 
     IEnumerator RutinaOleadas()
     {
-        while (true)
+        // 1. Variabilidad: Retraso inicial aleatorio para desincronizar los 4 puentes
+        float retrasoInicial = Random.Range(0f, maxRetrasoInicial);
+        yield return new WaitForSeconds(retrasoInicial);
+
+        while (indiceOleadaActual < configuracionOleadas.oleadas.Length)
         {
-            if (oleadaActual > 0)
+            if (indiceOleadaActual > 0)
             {
                 esperando = true;
                 yield return new WaitUntil(() => enemigosVivos <= 0);
                 esperando = false;
-                yield return new WaitForSeconds(tiempoEntreOleadas);
+                yield return new WaitForSeconds(configuracionOleadas.tiempoEntreOleadas);
             }
 
-            oleadaActual++;
-            int cantidadEnemigos = enemigosBase + (oleadaActual - 1) * extraPorOleada;
-            float velEnemigos = velocidadBase + (oleadaActual - 1) * velocidadExtraPorOleada;
-            int vidaEnemigos = vidaBase + (oleadaActual - 1) * vidaExtraPorOleada;
+            DatosOleada oleadaActual = configuracionOleadas.oleadas[indiceOleadaActual];
+            onNuevaOleada?.Invoke(indiceOleadaActual + 1);
 
-            Debug.Log($"[WaveSpawner {gameObject.name}] Oleada {oleadaActual} — {cantidadEnemigos} enemigos");
-            onNuevaOleada?.Invoke(oleadaActual);
+            yield return StartCoroutine(SpawnOleada(oleadaActual));
 
-            yield return StartCoroutine(SpawnOleada(cantidadEnemigos, velEnemigos, vidaEnemigos));
+            indiceOleadaActual++;
         }
+        onJuegoTerminado?.Invoke();
     }
 
-    IEnumerator SpawnOleada(int cantidad, float velocidad, int vida)
+    IEnumerator SpawnOleada(DatosOleada datos)
     {
-        for (int i = 0; i < cantidad; i++)
+        for (int i = 0; i < datos.cantidadEnemigos; i++)
         {
-            SpawnEnemigo(velocidad, vida);
-            yield return new WaitForSeconds(tiempoEntreSpawns);
+            SpawnEnemigo(datos.velocidadEnemigos, datos.vidaEnemigos);
+
+            // 2. Variabilidad: Tiempo entre enemigos ligeramente aleatorio
+            float tiempoAleatorio = datos.tiempoEntreSpawns + Random.Range(-variacionSpawn, variacionSpawn);
+            yield return new WaitForSeconds(Mathf.Max(0.1f, tiempoAleatorio));
         }
     }
 
@@ -77,7 +80,7 @@ public class WaveSpawner : MonoBehaviour
         Enemy enemy = go.GetComponent<Enemy>();
         if (enemy != null)
         {
-            enemy.Inicializar(canonTransform, velocidad, vida);
+            enemy.Inicializar(objetivoDeEstePuente, velocidad, vida, this);
             enemigosVivos++;
         }
     }

@@ -1,42 +1,63 @@
-using NUnit.Framework;
-using System.Text;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class ControlPuerta : MonoBehaviour
 {
     [Header("Componentes")]
     public HingeJoint bisagraPuerta;
 
-    [Header("Ajustes de Movimiento")]
-    public float velocidadSubida = 100f;
+    [Header("Configuración de Tiempos")]
+    public float tiempoArriba = 2f;
+    public float tiempoEspera = 5f;
+
+    [Header("Ajustes de Motor")]
+    public float velocidadSubida = 150f;
     public float velocidadBajada = 50f;
-    public float fuerzaMotor = 1000f;
+    public float fuerzaMotor = 2000f;
 
     private JointMotor motor;
+    private bool puedeActivar = true;
 
     void Start()
     {
         if (bisagraPuerta != null)
         {
             motor = bisagraPuerta.motor;
-            bisagraPuerta.useMotor = true; 
+            bisagraPuerta.useMotor = true;
         }
     }
 
     public void OnMoverPuerta(InputAction.CallbackContext context)
     {
-        if (bisagraPuerta == null) return;
+        if (context.started && puedeActivar)
+        {
+            StartCoroutine(SecuenciaPuerta());
+        }
+    }
 
-        if (context.started || context.performed)
+    IEnumerator SecuenciaPuerta()
+    {
+        puedeActivar = false;
+
+        ConfigurarMotor(-velocidadSubida);
+
+        float anguloObjetivo = bisagraPuerta.limits.min + 2f;
+
+        while (bisagraPuerta.angle > anguloObjetivo)
         {
-            ConfigurarMotor(-velocidadSubida);
+            yield return new WaitForFixedUpdate();
         }
-        else if (context.canceled)
-        {
-            ConfigurarMotor(velocidadBajada);
-        }
+
+        Debug.Log("Límite alcanzado. Esperando tiempo de cortesía...");
+        yield return new WaitForSeconds(tiempoArriba);
+
+        ConfigurarMotor(velocidadBajada);
+
+        yield return new WaitForSeconds(tiempoEspera);
+
+        puedeActivar = true;
+        Debug.Log("Sistema listo");
     }
 
     private void ConfigurarMotor(float velocidad)

@@ -60,7 +60,7 @@ public class Shoot : MonoBehaviour
         if (haExplotado) return;
  
         // Por si el collider físico sí detecta el golpe (doble seguridad)
-        if (other.gameObject.CompareTag("Floor") || other.gameObject.CompareTag("Ground"))
+        if (other.gameObject.CompareTag("Floor"))
         {
             transform.position = other.contacts[0].point;
             Explotar();

@@ -24,17 +24,22 @@ public class WaveSpawner : MonoBehaviour
     public System.Action<int> onNuevaOleada;
     public System.Action onJuegoTerminado;
 
+    /// <summary>Usado por <see cref="VictoryCanvasManager"/> para saber si este spawner cuenta para la meta.</summary>
+    public bool TieneOleadasConfiguradas()
+    {
+        return configuracionOleadas != null
+            && configuracionOleadas.oleadas != null
+            && configuracionOleadas.oleadas.Length > 0;
+    }
+
     void Start()
     {
-        if (configuracionOleadas != null && configuracionOleadas.oleadas.Length > 0)
-        {
+        if (TieneOleadasConfiguradas())
             StartCoroutine(RutinaOleadas());
-        }
     }
 
     IEnumerator RutinaOleadas()
     {
-        // 1. Variabilidad: Retraso inicial aleatorio para desincronizar los 4 puentes
         float retrasoInicial = Random.Range(0f, maxRetrasoInicial);
         yield return new WaitForSeconds(retrasoInicial);
 
@@ -50,11 +55,14 @@ public class WaveSpawner : MonoBehaviour
 
             LevelsWavesSO oleadaActual = configuracionOleadas.oleadas[indiceOleadaActual];
             onNuevaOleada?.Invoke(indiceOleadaActual + 1);
-
             yield return StartCoroutine(SpawnOleada(oleadaActual));
 
             indiceOleadaActual++;
         }
+
+        esperando = true;
+        yield return new WaitUntil(() => enemigosVivos <= 0);
+        esperando = false;
         onJuegoTerminado?.Invoke();
     }
 
@@ -64,7 +72,6 @@ public class WaveSpawner : MonoBehaviour
         {
             SpawnEnemigo(datos.velocidadEnemigos, datos.vidaEnemigos);
 
-            // 2. Variabilidad: Tiempo entre enemigos ligeramente aleatorio
             float tiempoAleatorio = datos.tiempoEntreSpawns + Random.Range(-variacionSpawn, variacionSpawn);
             yield return new WaitForSeconds(Mathf.Max(0.1f, tiempoAleatorio));
         }
